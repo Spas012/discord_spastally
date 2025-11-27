@@ -28,6 +28,7 @@ When inviting the bot to your server, ensure you select the following:
 ### Bot Permissions
 *   `Send Messages` (To reply to commands)
 *   `View Channels`
+*   **Message Content Intent** (Must be enabled in the "Bot" tab of the Developer Portal)
 
 ## Installation
 
