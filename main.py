@@ -76,10 +76,7 @@ async def tally_create(interaction: discord.Interaction, name: str):
     finally:
         conn.close()
 
-@bot.tree.command(name="tally_add", description="Add to a tally")
-@app_commands.describe(name="The name of the tally", amount="Amount to add (default 1)")
-@app_commands.autocomplete(name=tally_autocomplete)
-async def tally_add(interaction: discord.Interaction, name: str, amount: int = 1):
+async def perform_tally_add(interaction: discord.Interaction, name: str, amount: int):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('UPDATE tallies SET count = count + ? WHERE guild_id = ? AND name = ?', (amount, interaction.guild_id, name))
@@ -93,12 +90,17 @@ async def tally_add(interaction: discord.Interaction, name: str, amount: int = 1
         await interaction.response.send_message(f"Tally '{name}' not found.", ephemeral=True)
     conn.close()
 
+@bot.tree.command(name="tally_add", description="Add to a tally")
+@app_commands.describe(name="The name of the tally", amount="Amount to add (default 1)")
+@app_commands.autocomplete(name=tally_autocomplete)
+async def tally_add(interaction: discord.Interaction, name: str, amount: int = 1):
+    await perform_tally_add(interaction, name, amount)
+
 @bot.tree.command(name="tally", description="Quickly add 1 to a tally")
 @app_commands.describe(name="The name of the tally")
 @app_commands.autocomplete(name=tally_autocomplete)
 async def tally_quick_add(interaction: discord.Interaction, name: str):
-    # Reuse the logic from tally_add
-    await tally_add(interaction, name, 1)
+    await perform_tally_add(interaction, name, 1)
 
 @bot.tree.command(name="tally_sub", description="Subtract from a tally")
 @app_commands.describe(name="The name of the tally", amount="Amount to subtract (default 1)")
