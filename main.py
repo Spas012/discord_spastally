@@ -130,7 +130,7 @@ async def tally_view(interaction: discord.Interaction, name: str):
     conn.close()
     
     if row:
-        await interaction.response.send_message(f"Tally '{name}' is at: {row['count']}", ephemeral=False)
+        await interaction.response.send_message(f"Tally for {name} is at: {row['count']}", ephemeral=False)
     else:
         await interaction.response.send_message(f"Tally '{name}' not found.", ephemeral=True)
 

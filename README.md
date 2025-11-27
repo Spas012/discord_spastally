@@ -1,5 +1,8 @@
 # Discord Tally Bot
 
+Antigravity Discord Tally Bot.
+This entire code was AI generated. I have done literally nothing.
+
 A robust, self-hosted Discord bot for tracking "tallies" (event counters) within a server. Built with Python and SQLite.
 
 ## Features
