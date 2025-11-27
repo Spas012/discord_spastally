@@ -65,7 +65,7 @@ async def tally_autocomplete(interaction: discord.Interaction, current: str) -> 
     ][:25] # Discord limits to 25 choices
 
 # Constants
-SOFT_LIMIT = 127
+SOFT_LIMIT = 2**16
 HARD_LIMIT_INPUT = 1_000_000_000_000 # 1e12
 HARD_LIMIT_TOTAL = 1_000_000_000_000 # 1e12
 
