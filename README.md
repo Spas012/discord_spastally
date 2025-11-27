@@ -54,12 +54,15 @@ python main.py
 
 ### Commands
 
+*   `/tally [name]`: Quickly add 1 to a tally.
 *   `/tally_create [name]`: Create a new tally (starts at 0).
 *   `/tally_add [name] [amount]`: Add to a tally (default 1).
 *   `/tally_sub [name] [amount]`: Subtract from a tally (default 1).
 *   `/tally_view [name]`: View the current count of a tally.
 *   `/tally_list`: List all tallies in the server.
 *   `/tally_delete [name]`: Permanently delete a tally.
+
+> **Note:** Commands that require a tally name now support autocomplete! Just start typing to see suggestions.
 
 ## Database
 

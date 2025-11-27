@@ -49,6 +49,19 @@ bot = TallyBot()
 
 # Slash Commands
 
+async def tally_autocomplete(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    # Fetch tallies that match the current input (case-insensitive partial match)
+    cursor.execute("SELECT name FROM tallies WHERE guild_id = ? AND name LIKE ?", (interaction.guild_id, f'%{current}%'))
+    rows = cursor.fetchall()
+    conn.close()
+    
+    return [
+        app_commands.Choice(name=row['name'], value=row['name'])
+        for row in rows
+    ][:25] # Discord limits to 25 choices
+
 @bot.tree.command(name="tally_create", description="Create a new tally")
 @app_commands.describe(name="The name of the tally")
 async def tally_create(interaction: discord.Interaction, name: str):
@@ -65,6 +78,7 @@ async def tally_create(interaction: discord.Interaction, name: str):
 
 @bot.tree.command(name="tally_add", description="Add to a tally")
 @app_commands.describe(name="The name of the tally", amount="Amount to add (default 1)")
+@app_commands.autocomplete(name=tally_autocomplete)
 async def tally_add(interaction: discord.Interaction, name: str, amount: int = 1):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -79,8 +93,16 @@ async def tally_add(interaction: discord.Interaction, name: str, amount: int = 1
         await interaction.response.send_message(f"Tally '{name}' not found.", ephemeral=True)
     conn.close()
 
+@bot.tree.command(name="tally", description="Quickly add 1 to a tally")
+@app_commands.describe(name="The name of the tally")
+@app_commands.autocomplete(name=tally_autocomplete)
+async def tally_quick_add(interaction: discord.Interaction, name: str):
+    # Reuse the logic from tally_add
+    await tally_add(interaction, name, 1)
+
 @bot.tree.command(name="tally_sub", description="Subtract from a tally")
 @app_commands.describe(name="The name of the tally", amount="Amount to subtract (default 1)")
+@app_commands.autocomplete(name=tally_autocomplete)
 async def tally_sub(interaction: discord.Interaction, name: str, amount: int = 1):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -97,6 +119,7 @@ async def tally_sub(interaction: discord.Interaction, name: str, amount: int = 1
 
 @bot.tree.command(name="tally_view", description="View a tally's count")
 @app_commands.describe(name="The name of the tally")
+@app_commands.autocomplete(name=tally_autocomplete)
 async def tally_view(interaction: discord.Interaction, name: str):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -125,6 +148,7 @@ async def tally_list(interaction: discord.Interaction):
 
 @bot.tree.command(name="tally_delete", description="Delete a tally")
 @app_commands.describe(name="The name of the tally")
+@app_commands.autocomplete(name=tally_autocomplete)
 async def tally_delete(interaction: discord.Interaction, name: str):
     conn = get_db_connection()
     cursor = conn.cursor()
