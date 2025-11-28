@@ -78,7 +78,6 @@ async def on_app_command_error(interaction: discord.Interaction, error: app_comm
 
 @bot.tree.command(name="tally_create", description="Create a new tally")
 @app_commands.describe(name="The name of the tally")
-@app_commands.checks.has_permissions(administrator=True)
 async def tally_create(interaction: discord.Interaction, name: str):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -185,7 +184,6 @@ async def tally_list(interaction: discord.Interaction):
 
 @bot.tree.command(name="tally_delete", description="Delete a tally")
 @app_commands.describe(name="The name of the tally")
-@app_commands.checks.has_permissions(administrator=True)
 @app_commands.autocomplete(name=tally_autocomplete)
 async def tally_delete(interaction: discord.Interaction, name: str):
     conn = get_db_connection()
